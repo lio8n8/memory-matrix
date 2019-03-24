@@ -48,11 +48,20 @@ class GameBoard {
     }
 
     init() {
-        this.rng.generate(this.randomTiles);
+        const numbers = this.rng.generate(this.randomTiles);
+        const timeout = 5000;
 
         for (let i = 0; i < this.rows; i++) {
             this.gameBoardEl.appendChild(this.createRow());
         }
+
+        setTimeout(() => {
+            this.addClasses('tile-active', numbers);
+        }, timeout);
+
+        setTimeout(() => {
+            this.removeClasses('tile-active', numbers);
+        }, timeout * 2);
     }
 
     createRow() {
@@ -80,6 +89,18 @@ class GameBoard {
 
     removeColumn() {
 
+    }
+
+    addClasses(className, tiles) {
+        for (let i = 0; i < this.randomTiles; i++) {
+            this.tiles[tiles[i]].classList.add(className);
+        }
+    }
+
+    removeClasses(className, tiles) {
+        for (let i = 0; i < this.randomTiles; i++) {
+            this.tiles[tiles[i]].classList.remove(className);
+        }
     }
 }
 
