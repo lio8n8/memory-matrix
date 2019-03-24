@@ -16,3 +16,29 @@ body, .container {
     align-items: center;
     justify-content: center;
 }
+
+.game-board {
+    display: flex;
+    flex-direction: row;
+}
+
+.tile {
+    background-color: #A5BE00;
+    border-radius: 5px;
+    width: 70px;
+    height: 70px;
+    margin: 2px;
+    box-sizing: border-box;
+}
+
+.tile:hover {
+    border: 2px solid #8DAF2F;
+}
+
+.tile-active {
+    background-color: #0D2C54;
+}
+
+.tile-incorrect {
+    background-color: #000;
+}
