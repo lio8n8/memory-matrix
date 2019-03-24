@@ -10,10 +10,11 @@
 class Game {
     constructor(GameBoard) {
         this.gameBoard = new GameBoard(4, 4, RNG);
+        this.isStarted = false;
     }
 
     start() {
-        this.gameBoard.init();
+        this.gameBoard.initLevel();
     }
 
     draw() {
@@ -45,15 +46,15 @@ class GameBoard {
         this.tiles = [];
         this.gameBoardEl = document.getElementById('game-board');
         this.rng = new RNG();
-    }
-
-    init() {
-        const numbers = this.rng.generate(this.randomTiles);
-        const timeout = 5000;
 
         for (let i = 0; i < this.rows; i++) {
-            this.gameBoardEl.appendChild(this.createRow());
+            this.gameBoardEl.appendChild(this.createRow(i * this.rows));
         }
+    }
+
+    initLevel() {
+        const numbers = this.rng.generate(this.randomTiles);
+        const timeout = 5000;
 
         setTimeout(() => {
             this.addClasses('tile-active', numbers);
@@ -62,9 +63,11 @@ class GameBoard {
         setTimeout(() => {
             this.removeClasses('tile-active', numbers);
         }, timeout * 2);
+
+        this.addListener();
     }
 
-    createRow() {
+    createRow(index) {
         let row = document.createElement('div');
         let tile = null;
         row.className = 'tile-row';
@@ -72,6 +75,7 @@ class GameBoard {
         for (let i = 0; i < this.colums; i++) {
             tile = document.createElement('div');
             tile.className = 'tile';
+            tile.id = index + i;
             this.tiles.push(tile);
             row.appendChild(tile);
         }
@@ -101,6 +105,15 @@ class GameBoard {
         for (let i = 0; i < this.randomTiles; i++) {
             this.tiles[tiles[i]].classList.remove(className);
         }
+    }
+
+    addListener() {
+        const numbers = this.rng.getNumbers();
+
+        this.gameBoardEl.addEventListener('click', function (e) {
+            const className = numbers.includes(+e.target.id) ? 'tile-active' : 'tile-incorrect';
+            e.target.classList.add(className);
+        }, false);
     }
 }
 
