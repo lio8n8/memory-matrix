@@ -12,7 +12,18 @@
 <body>
     <div class="container">
         <h1 class="title">Memory Matrix</h1>
-        <div id="game-board" class="game-board"></div>
+        <div class="game-board-wrap">
+            <div id="game-board" class="game-board"></div>
+            <div class="info">
+                <div class="level">Level: <span id="level">0</span></div>
+                <div class="level-points">Level points: <span id="level-points">0</span></div>
+                <div class="total-points">Total points: <span id="total-points">0</span></div>
+                <div class="btns">
+                    <button id="start-btn" class="start-btn btn">Start</button>
+                    <button id="finish-btn" class="finish-btn btn">Finish</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="game.js"></script>
 </body>

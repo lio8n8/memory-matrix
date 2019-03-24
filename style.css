@@ -17,6 +17,14 @@ body, .container {
     justify-content: center;
 }
 
+.title {
+    position: absolute;
+    top: 10px;
+    color: #011627;
+    font-weight: 400;
+    font-size: 36px;
+}
+
 .game-board {
     display: flex;
     flex-direction: row;
@@ -41,4 +49,40 @@ body, .container {
 
 .tile-incorrect {
     background-color: #000;
+}
+
+.game-board-wrap {
+    display: flex;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    color: #011627;
+    font-size: 20px;
+    margin: 0 20px;
+}
+
+.btn {
+    width: 90px;
+    height: 30px;
+    background-size: 200% 100%;
+    color: #FFF;
+    border: none;
+    font-size: 16px;
+    margin: 30px 5px;
+    transition: background-position 0.5s;
+}
+
+.start-btn {
+    background-image: linear-gradient(to right, #252422 50%, #8EA604 50%);
+}
+
+.finish-btn {
+    background-image: linear-gradient(to right, #252422 50%, #FF4E00 50%);
+}
+
+.start-btn:hover, .finish-btn:hover {
+    background-position: -100% 0;
 }
