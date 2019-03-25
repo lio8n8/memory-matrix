@@ -9,7 +9,8 @@
  */
 class Game {
     constructor(GameBoard) {
-        this.gameBoard = new GameBoard(4, 4, RNG);
+        this.levelManager = new LevelManager();
+        this.gameBoard = new GameBoard(4, 4, RNG, this.levelManager);
         // this.isStarted = false;
     }
 
@@ -27,7 +28,9 @@ class Game {
 }
 
 class User {
-
+    constructor() {
+        throw new Error('Not yet implemented!');
+    }
 }
 
 /**
@@ -36,19 +39,27 @@ class User {
 class GameBoard {
     static MIN_ROWS = 4;
     static MIN_COLS = 4;
-    static MAX_ROWS = 15;
-    static MAX_COLS = 15;
+    static MAX_ROWS = 14;
+    static MAX_COLS = 14;
 
-    constructor(rows = 4, columns = 4, RNG) {
+    constructor(rows = 4, columns = 4, RNG, levelManager) {
         this.rows = rows;
         this.colums = columns;
         this.randomTiles = 4;
         this.tiles = [];
         this.isGameStarted = false;
+        this.levelManager = levelManager;
         this.gameBoardEl = document.getElementById('game-board');
         this.startBtn = document.getElementById('start-btn');
         this.finishBtn = document.getElementById('finish-btn');
         this.rng = new RNG();
+        this.clicks = 0;
+        this.correctClicks = 0;
+        this.gameInfo = {
+            currentLevel: document.getElementById('level'),
+            currentPoints: document.getElementById('current-points'),
+            totalPoints: document.getElementById('total-points')
+        }
 
         for (let i = 0; i < this.rows; i++) {
             this.gameBoardEl.appendChild(this.createRow(i * this.rows));
@@ -60,6 +71,7 @@ class GameBoard {
 
     initLevel() {
         this.resetTiles();
+        this.clicks = 0;
 
         const numbers = this.rng.generate(this.randomTiles);
         const timeout = 5000;
@@ -92,15 +104,15 @@ class GameBoard {
     }
 
     createColumn() {
-
+        throw new Error('Not yet implemented!');
     }
 
     removeRow() {
-
+        throw new Error('Not yet implemented!');
     }
 
     removeColumn() {
-
+        throw new Error('Not yet implemented!');
     }
 
     addClasses(className, tiles) {
@@ -126,8 +138,24 @@ class GameBoard {
             const targetId = +e.target.id;
 
             if (this.isGameStarted && targetId) {
-                const className = this.rng.getNumbers().includes(targetId - 1) ? 'tile-active' : 'tile-incorrect';
+                const isCorrect = this.rng.getNumbers().includes(targetId - 1);
+                const className = isCorrect ? 'tile-active' : 'tile-incorrect';
                 e.target.classList.add(className);
+
+                if (!this.tiles[targetId - 1].isClicked) {
+                    this.tiles[targetId - 1].isClicked = true;
+                    this.clicks++;
+
+                    if (isCorrect) {
+                        this.levelManager.increasePoints();
+                        this.correctClicks++;
+                        this.gameInfo.currentPoints.textContent = this.levelManager.currentPoints;
+                    }
+
+                    if (this.clicks >= this.randomTiles) {
+                        // this.levelManager.check();
+                    }
+                }
             }
         }, false);
     }
@@ -142,10 +170,45 @@ class GameBoard {
             this.isGameStarted = false;
         });
     }
+
+    reset() {
+        this.clicks = 0;
+        this.correctClicks = 0;
+    }
 }
 
+/**
+ * Manages game levels.
+ */
 class LevelManager {
+    static MIN_LEVEL = 0;
+    static MAX_LEVEL = 20;
 
+    constructor() {
+        this.currentLevel = 0;
+        this.currentPoints = 0;
+        this.totalPoints = 0;
+    }
+
+    increasePoints() {
+        this.currentPoints += 10;
+    }
+
+    levelUp() {
+        this.currentLevel = this.currentLevel >= LevelManager.MAX_LEVEL
+            ? this.currentLevel : ++this.currentLevel;
+    }
+
+    levelDown() {
+        this.currentLevel = this.currentLevel <= LevelManager.MIN_LEVEL
+            ? this.currentLevel : --this.currentLevel;
+    }
+
+    reset() {
+        this.currentLevel = 0;
+        this.currentPoints = 0;
+        this.totalPoints = 0;
+    }
 }
 
 /**
