@@ -10,11 +10,11 @@
 class Game {
     constructor(GameBoard) {
         this.gameBoard = new GameBoard(4, 4, RNG);
-        this.isStarted = false;
+        // this.isStarted = false;
     }
 
     start() {
-        this.gameBoard.initLevel();
+        // this.gameBoard.initLevel();
     }
 
     draw() {
@@ -44,15 +44,23 @@ class GameBoard {
         this.colums = columns;
         this.randomTiles = 4;
         this.tiles = [];
+        this.isGameStarted = false;
         this.gameBoardEl = document.getElementById('game-board');
+        this.startBtn = document.getElementById('start-btn');
+        this.finishBtn = document.getElementById('finish-btn');
         this.rng = new RNG();
 
         for (let i = 0; i < this.rows; i++) {
             this.gameBoardEl.appendChild(this.createRow(i * this.rows));
         }
+
+        this.initBtns();
+        this.addListener();
     }
 
     initLevel() {
+        this.resetTiles();
+
         const numbers = this.rng.generate(this.randomTiles);
         const timeout = 5000;
 
@@ -62,9 +70,9 @@ class GameBoard {
 
         setTimeout(() => {
             this.removeClasses('tile-active', numbers);
+            this.isGameStarted = true;
         }, timeout * 2);
 
-        this.addListener();
     }
 
     createRow(index) {
@@ -75,7 +83,7 @@ class GameBoard {
         for (let i = 0; i < this.colums; i++) {
             tile = document.createElement('div');
             tile.className = 'tile';
-            tile.id = index + i;
+            tile.id = index + i + 1;
             this.tiles.push(tile);
             row.appendChild(tile);
         }
@@ -107,13 +115,32 @@ class GameBoard {
         }
     }
 
-    addListener() {
-        const numbers = this.rng.getNumbers();
+    resetTiles() {
+        this.tiles.forEach(tile => {
+            tile.className = 'tile';
+        });
+    }
 
-        this.gameBoardEl.addEventListener('click', function (e) {
-            const className = numbers.includes(+e.target.id) ? 'tile-active' : 'tile-incorrect';
-            e.target.classList.add(className);
+    addListener() {
+        this.gameBoardEl.addEventListener('click', e => {
+            const targetId = +e.target.id;
+
+            if (this.isGameStarted && targetId) {
+                const className = this.rng.getNumbers().includes(targetId - 1) ? 'tile-active' : 'tile-incorrect';
+                e.target.classList.add(className);
+            }
         }, false);
+    }
+
+    initBtns() {
+        this.startBtn.addEventListener('click', e => {
+            this.isGameStarted = false;
+            this.initLevel();
+        });
+
+        this.finishBtn.addEventListener('click', e => {
+            this.isGameStarted = false;
+        });
     }
 }
 
